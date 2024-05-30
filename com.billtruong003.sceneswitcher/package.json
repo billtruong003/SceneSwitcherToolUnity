@@ -8,6 +8,10 @@
     "documentationUrl": "",
     "changelogUrl": "",
     "licensesUrl": "",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/billtruong003/SceneSwitcherToolUnity.git"
+    },
     "keywords": [
         "scene",
         "switch",
