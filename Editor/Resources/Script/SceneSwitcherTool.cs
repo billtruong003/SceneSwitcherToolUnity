@@ -14,6 +14,7 @@ public class SceneSwitcherTool : EditorWindow
     private double lastClickTime = 0;
     private const float doubleClickThreshold = 0.3f; // Adjust the threshold as needed
     private string lastClickedScene = null;
+    private Texture2D profileImage;
 
     private const string BookmarkedScenesKey = "BookmarkedScenes";
 
@@ -26,6 +27,7 @@ public class SceneSwitcherTool : EditorWindow
     private void OnEnable()
     {
         LoadBookmarkedScenes();
+        profileImage = Resources.Load<Texture2D>("UI/ProfileImg");
     }
 
     private void OnGUI()
@@ -37,14 +39,12 @@ public class SceneSwitcherTool : EditorWindow
 
         GUILayout.BeginHorizontal();
 
-        // Start drawing border for the Scenes in Build section
-        GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)); // Make it responsive
+        GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 
         GUILayout.Label("Scenes in Build", EditorStyles.boldLabel);
 
         scenesInBuildScrollPosition = GUILayout.BeginScrollView(scenesInBuildScrollPosition, GUILayout.ExpandHeight(true));
 
-        // Display scenes in build settings
         for (int i = 0; i < EditorBuildSettings.scenes.Length; i++)
         {
             EditorBuildSettingsScene scene = EditorBuildSettings.scenes[i];
@@ -70,20 +70,18 @@ public class SceneSwitcherTool : EditorWindow
 
         GUILayout.EndScrollView();
 
-        GUILayout.FlexibleSpace(); // Add flexible space to balance height
+        GUILayout.FlexibleSpace();
 
         GUILayout.EndVertical();
 
         GUILayout.Space(10);
 
-        // Start drawing border for the Bookmarked Scenes section
-        GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)); // Make it responsive
+        GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 
         GUILayout.Label("Bookmarked Scenes", EditorStyles.boldLabel);
 
         bookmarkedScenesScrollPosition = GUILayout.BeginScrollView(bookmarkedScenesScrollPosition, GUILayout.ExpandHeight(true));
 
-        // Display bookmarked scenes
         for (int i = 0; i < bookmarkedScenes.Count; i++)
         {
             SceneAsset sceneAsset = bookmarkedScenes[i];
@@ -113,7 +111,7 @@ public class SceneSwitcherTool : EditorWindow
 
         GUILayout.EndScrollView();
 
-        GUILayout.FlexibleSpace(); // Add flexible space to balance height
+        GUILayout.FlexibleSpace();
 
         GUILayout.EndVertical();
 
@@ -121,15 +119,12 @@ public class SceneSwitcherTool : EditorWindow
 
         GUILayout.Space(10);
 
-        // Start drawing border for the fixed button section
         GUILayout.BeginVertical("box", GUILayout.MaxWidth(150), GUILayout.ExpandHeight(true));
 
         GUILayout.Space(10);
 
-        // Title for the Play button
         GUILayout.Label("Play Scene", EditorStyles.boldLabel);
 
-        // Button to switch scenes
         if (GUILayout.Button(new GUIContent("Play", EditorGUIUtility.IconContent("d_PlayButton").image), GUILayout.Height(30)))
         {
             if (!string.IsNullOrEmpty(selectedScene))
@@ -148,10 +143,8 @@ public class SceneSwitcherTool : EditorWindow
             }
         }
 
-        // Title for other buttons
         GUILayout.Label("Scene Options", EditorStyles.boldLabel);
 
-        // Button to switch scenes additively
         if (GUILayout.Button(new GUIContent("Additive", EditorGUIUtility.IconContent("d_Toolbar Plus More").image), GUILayout.Height(30)))
         {
             if (!string.IsNullOrEmpty(selectedScene))
@@ -162,7 +155,6 @@ public class SceneSwitcherTool : EditorWindow
             }
         }
 
-        // Button to load scenes
         if (GUILayout.Button(new GUIContent("Load", EditorGUIUtility.IconContent("d_Refresh").image), GUILayout.Height(30)))
         {
             if (!string.IsNullOrEmpty(selectedScene))
@@ -173,7 +165,6 @@ public class SceneSwitcherTool : EditorWindow
             }
         }
 
-        // Button to bookmark scenes
         if (GUILayout.Button(new GUIContent("Bookmark", EditorGUIUtility.IconContent("Favorite").image), GUILayout.Height(30)))
         {
             if (!string.IsNullOrEmpty(selectedScene))
@@ -189,7 +180,6 @@ public class SceneSwitcherTool : EditorWindow
             }
         }
 
-        // Button to remove all bookmarked scenes
         if (GUILayout.Button(new GUIContent("Remove All Bookmarks", EditorGUIUtility.IconContent("d_CacheServerDisconnected@2x").image), GUILayout.Height(30)))
         {
             Debug.Log("Remove All Bookmarks button clicked");
@@ -197,7 +187,34 @@ public class SceneSwitcherTool : EditorWindow
         }
 
         GUILayout.EndVertical();
-        // End drawing border for the fixed button section
+
+        GUILayout.Space(10);
+
+        if (profileImage != null)
+        {
+            Rect windowRect = position;
+            float imageWidth = profileImage.width;
+            float imageHeight = profileImage.height;
+            float x = windowRect.width - imageWidth - 20;
+            float y = windowRect.height - imageHeight - 60;
+
+            Color originalColor = GUI.color;
+            GUI.color = Color.white;
+            GUI.DrawTexture(new Rect(x - 5, y - 5, imageWidth + 10, imageHeight + 10), Texture2D.whiteTexture);
+            GUI.color = originalColor;
+
+            GUI.DrawTexture(new Rect(x, y, imageWidth, imageHeight), profileImage);
+
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 20;
+            style.fontStyle = FontStyle.Bold;
+
+            style.normal.textColor = new Color(1f, 0.5f, 0f);
+            GUI.Label(new Rect(x, y + imageHeight + 10, imageWidth, 30), "Bill", style);
+
+            style.normal.textColor = Color.black;
+            GUI.Label(new Rect(x + 35, y + imageHeight + 10, imageWidth, 30), "The Dev", style);
+        }
     }
 
     private void HandleBookmarkButtonClick(string sceneName)
@@ -209,7 +226,7 @@ public class SceneSwitcherTool : EditorWindow
             Debug.Log($"Double-click detected for scene: {sceneName}");
             string scenePath = GetScenePathByName(sceneName);
             EditorSceneManager.OpenScene(scenePath);
-            lastClickedScene = null; // Reset to prevent continuous loading
+            lastClickedScene = null;
         }
         else
         {
