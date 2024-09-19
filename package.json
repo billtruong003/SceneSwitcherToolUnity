@@ -2,12 +2,8 @@
     "name": "com.billtruong003.sceneswitcher",
     "version": "1.0.1",
     "displayName": "Scene Switcher Tool",
-    "description": "A custom Unity Editor tool for quickly:\n- Switching scenes.\n- Loading scenes.\n- Bookmarking scenes.\nAuthor: billtruong003",
+    "description": "A custom Unity Editor tool for quickly:\n- Switching scenes\n- Loading scenes\n- Bookmarking scenes\n\nAuthor: Truong Ngoc Chau (Bill)",
     "unity": "2022.1",
-    "unityRelease": "29f1",
-    "documentationUrl": "",
-    "changelogUrl": "",
-    "licensesUrl": "",
     "repository": {
         "type": "git",
         "url": "https://github.com/billtruong003/SceneSwitcherToolUnity.git"
